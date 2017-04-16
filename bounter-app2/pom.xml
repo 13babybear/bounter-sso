@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>bounter-sso</artifactId>
+        <groupId>com.bounter</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>bounter-app2</artifactId>
+    <packaging>war</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.3.v20170317</version>
+                <configuration>
+                    <!-- jetty热部署 -->
+                    <scanIntervalSeconds>2</scanIntervalSeconds>
+                    <httpConnector>
+                        <port>28080</port>
+                        <idleTimeout>60000</idleTimeout>
+                    </httpConnector>
+                    <!-- web上下文 -->
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
