@@ -1,6 +1,7 @@
 package com.bounter.app1.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bounter.app1.utility.CookieUtil;
 import com.bounter.app1.utility.RestTemplateUtil;
 
 import javax.servlet.*;
@@ -20,6 +21,7 @@ public class SSOFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
@@ -34,7 +36,9 @@ public class SSOFilter implements Filter {
         //如果请求中存在Token，则去SSO Server校验Token
         String ssoToken = request.getParameter("sso-token");
         if(ssoToken != null) {
+            String jSessionId = request.getParameter("jSessionId");
             String ssoUrl = "http://www.sso.com:18080/sso/authenticate?sso-token=" + ssoToken;
+            //验证时带上服务器的JSESSIONID
             String resultStr =  RestTemplateUtil.get(request,ssoUrl,null);
             JSONObject retObj = JSONObject.parseObject(resultStr);
             //sso-token验证成功
@@ -47,7 +51,7 @@ public class SSOFilter implements Filter {
         }
 
         //跳转到sso server进行登录
-        response.sendRedirect("http://www.sso.com:18080/sso/login?redirect=" + request.getContextPath());
+        response.sendRedirect("http://www.sso.com:18080/sso/login?redirect=" + request.getRequestURL());
     }
 
     @Override

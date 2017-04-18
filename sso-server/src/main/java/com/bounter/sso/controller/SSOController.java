@@ -25,21 +25,35 @@ public class SSOController {
     private SSOService ssoService;
 
     @RequestMapping(value = "/sso/login", method={RequestMethod.GET, RequestMethod.POST})
-    public String ssoLogin(HttpSession session, HttpServletResponse response, String username, String password, String redirect) throws IOException {
+    public String ssoLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, String redirect) throws IOException {
+        HttpSession session = request.getSession();
+        //获取JSessionID
+        String jSessionId = CookieUtil.getValue(request,"JSESSIONID");
+        //如果cookie中包含sso-token,则跳过登录验证
+        String ssoToken = CookieUtil.getValue(request,"sso-token");
+        if (ssoToken != null) {
+            return "redirect:" + redirect + "?sso-token=" + ssoToken + "&jSessionId=" + jSessionId;
+        }
+
+        //如果没有用户名密码，则重定向到登录页面
+        if (username == null || password == null) {
+            return "login";
+        }
+
         //登录验证
         boolean loginSuccess = ssoService.loginCheck(username,password);
 
         //登录认证成功
         if (loginSuccess) {
             //创建sso-token
-            String ssoToken = UUID.randomUUID().toString();
+            ssoToken = UUID.randomUUID().toString();
             //将token保存到session中
             session.setAttribute("sso-token",ssoToken);
             //将用户信息保存到token中
             session.setAttribute("uid",username);
             CookieUtil.create(response, "sso-token", ssoToken, false, -1);
             //带着sso-token重定向到app页面
-            return "redirect:" + redirect + "?sso-token=" + ssoToken;
+            return "redirect:" + redirect + "?sso-token=" + ssoToken + "&jSessionId=" + jSessionId;
         } else {
             return "login";
         }

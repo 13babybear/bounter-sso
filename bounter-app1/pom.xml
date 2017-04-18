@@ -20,7 +20,7 @@
                     <!-- jetty热部署 -->
                     <scanIntervalSeconds>2</scanIntervalSeconds>
                     <httpConnector>
-                        <port>38080</port>
+                        <port>28080</port>
                         <idleTimeout>60000</idleTimeout>
                     </httpConnector>
                     <!-- web上下文 -->
