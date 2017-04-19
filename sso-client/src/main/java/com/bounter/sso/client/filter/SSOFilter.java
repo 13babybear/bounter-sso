@@ -1,7 +1,7 @@
-package com.bounter.app1.filter;
+package com.bounter.sso.client.filter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bounter.app1.utility.RestTemplateUtil;
+import com.bounter.sso.client.utility.RestTemplateUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
