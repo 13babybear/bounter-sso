@@ -33,7 +33,7 @@ public class SSOController {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @Resource(name="redisTemplate")
-    private SetOperations<String, String> valueOps; 
+    private SetOperations<String, String> setOps;
 
     @RequestMapping("/")
     public String home(HttpServletRequest request) {
@@ -45,7 +45,8 @@ public class SSOController {
     	//先判断Cookie中是否有sso-token,如果有sso-token跳过登录
     	String ssoToken = CookieUtil.getValue(request, "sso-token");
     	if(ssoToken != null) {
-    		//把app地址保存到key为sso-token的集合中
+    		//把app地址保存到key为sso-token的redis集合中
+            setOps.add(ssoToken,redirect);
     		return "redirect:" + redirect + "?sso-token=" + ssoToken;
     	}
     	
@@ -56,8 +57,10 @@ public class SSOController {
         if (loginSuccess) {
             //创建sso-token
             ssoToken = UUID.randomUUID().toString();
-            //将token保存到redis中，key和value都是ssoToken,并设置过期时间30min
-            valueOps.set(ssoToken, ssoToken, 30, TimeUnit.MINUTES);
+            //把app地址保存到key为sso-token的redis集合中
+            setOps.add(ssoToken,redirect);
+            //设置过期时间为30分钟
+            stringRedisTemplate.expire(ssoToken,30,TimeUnit.MINUTES);
             //将token保存到浏览器cookie中,30分钟后失效，失效时间与redis一致
             CookieUtil.create(response, "sso-token", ssoToken, false, 1800);
             //带着sso-token重定向到app页面

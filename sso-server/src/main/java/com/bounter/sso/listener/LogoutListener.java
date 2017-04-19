@@ -1,10 +1,12 @@
 package com.bounter.sso.listener;
 
+import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import com.bounter.sso.utility.RestHttpClient;
 
+@WebListener
 public class LogoutListener implements HttpSessionListener {
 
 	@Override
