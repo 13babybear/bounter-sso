@@ -35,7 +35,7 @@
     <!-- SSO Filter -->
     <filter>
         <filter-name>ssoFilter</filter-name>
-        <filter-class>com.bounter.app2.filter.SSOFilter</filter-class>
+        <filter-class>com.bounter.sso.client.filter.SSOFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>ssoFilter</filter-name>
