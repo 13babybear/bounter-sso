@@ -1,18 +1,16 @@
 package com.bounter.sso.controller;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,6 +55,8 @@ public class SSOController {
         if (loginSuccess) {
             //创建sso-token
             ssoToken = UUID.randomUUID().toString();
+            //将token保存到session中
+            request.getSession().setAttribute("sso-token", ssoToken);
             //把app地址保存到key为sso-token的redis集合中
             setOps.add(ssoToken,redirect);
             //设置过期时间为30分钟
@@ -89,6 +89,10 @@ public class SSOController {
         if(stringRedisTemplate.hasKey(ssoToken)) {
         	//清除cookie中的数据
         	CookieUtil.create(response, "sso-token", null, false, 0);
+        	//根据sso-token从redis中查询出当前token对应的所有的应用url
+        	Set<String> urls = setOps.members(ssoToken);
+        	//将所有待删除的url放入session中，准备在监听器删除
+        	request.getSession().setAttribute("urls", urls);
             //删除redis中相关的token
             stringRedisTemplate.delete(ssoToken);
             //让session失效，触发session失效监听器取执行批量登出
