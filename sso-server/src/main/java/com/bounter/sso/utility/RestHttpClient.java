@@ -1,4 +1,4 @@
-package com.bounter.sso.client.utility;
+package com.bounter.sso.utility;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -27,7 +27,11 @@ import org.apache.http.util.EntityUtils;
 public class RestHttpClient {
 
 	// 初始化HttpClient对象
-	private static CloseableHttpClient httpClient = HttpClients.createDefault();
+	private static CloseableHttpClient httpClient = HttpClients
+					.custom()
+					.setConnectionManager(
+									new PoolingHttpClientConnectionManager())
+					.build();
 
 	/**
 	 * 启用新的线程发送Get请求， 利用 FutureTask的回调方法让主线程从新线程中获取返回内容

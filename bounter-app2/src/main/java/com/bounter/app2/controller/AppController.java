@@ -1,7 +1,5 @@
 package com.bounter.app2.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AppController {
 
+	@RequestMapping("/")
+    public String home() {
+        return "index";
+    }
+	
     @RequestMapping("/app2")
     public String protectedResource() {
         return "index";
@@ -20,10 +23,15 @@ public class AppController {
      * 接收SSO服务器发送的批量登出命令,进行简单登出
      * @return
      */
-    @RequestMapping("/sso/batchLogout")
-    public void batchLogout(HttpSession session) {
-        if(session != null) {
-        	session.invalidate();
-        }
-    }
+//    @RequestMapping("/app2/batchLogout")
+//    public void batchLogout(HttpSession session, String jsessionid) {
+//    	//从应用会话容器中获取知道jessionid的会话
+//    	HttpSession appSession = AppSessionContainer.getAppSessions().get(jsessionid);
+//        if(appSession != null) {
+//        	//从session容器中删除该session
+//    		AppSessionContainer.getAppSessions().remove(appSession.getId());
+//        	//注销该会话
+//        	appSession.invalidate();
+//        }
+//    }
 }

@@ -18,4 +18,25 @@
 		</dependency>
 	</dependencies>
 	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.4.3.v20170317</version>
+				<configuration>
+					<!-- jetty热部署 -->
+					<scanIntervalSeconds>2</scanIntervalSeconds>
+					<httpConnector>
+						<port>28080</port>
+						<idleTimeout>60000</idleTimeout>
+					</httpConnector>
+					<!-- web上下文 -->
+					<webAppConfig>
+						<contextPath>/</contextPath>
+					</webAppConfig>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
